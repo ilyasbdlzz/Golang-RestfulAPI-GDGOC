@@ -4,6 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	// "gorm.io/driver/sqlite"
+	// "gorm.io/gorm"
 )
 
 type album struct {
@@ -12,9 +15,9 @@ type album struct {
 	Price float64 `json:"price"`
 }
 	var albums = []album {
-		{ID: "1", Title: "Blue", Price: 56.99},
+		{ID: "1", Title: "Red", Price: 56.99},
 		{ID: "2", Title: "Blue", Price: 56.99},
-		{ID: "3", Title: "Blue", Price: 56.99},
+		{ID: "3", Title: "Green", Price: 56.99},
 	}
 
 func getAlbums(c *gin.Context) {
@@ -27,6 +30,14 @@ func postAlbums(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H {"message" :"Invalid Request" })
 		return
 	}
+
+	if newAlbum.ID == "" || newAlbum.Title == "" || newAlbum.Price <= 0 {
+        c.IndentedJSON(http.StatusBadRequest, gin.H{
+            "message": "Kolom ID, Title, & Price harus diisi dan dengan format yg valid",
+        })
+        return
+    }
+
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
